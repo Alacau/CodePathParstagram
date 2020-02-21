@@ -1,0 +1,6 @@
+framework module Pods_CodePathParstagram {
+  umbrella header "Pods-CodePathParstagram-umbrella.h"
+
+  export *
+  module * { export * }
+}
