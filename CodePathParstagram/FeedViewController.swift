@@ -15,29 +15,21 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var tableView: UITableView!
     
     var posts = [PFObject]()
+    var refreshControl = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.delegate = self
         tableView.dataSource = self
-        // Do any additional setup after loading the view.
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        let query = PFQuery(className: "Posts")
-        query.includeKey("author")
-        query.limit = 20
-        query.findObjectsInBackground { (posts, error) in
-            if posts != nil {
-                self.posts = posts!
-                self.tableView.reloadData()
-            } else {
-                print("Error: \(error?.localizedDescription)")
-            }
-        }
+        loadPosts()
+        refreshControl.addTarget(self, action: #selector(loadPosts), for: .valueChanged)
+        tableView.refreshControl = refreshControl
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -60,6 +52,20 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         return cell
      }
      
+    @objc func loadPosts() {
+        let query = PFQuery(className: "Posts")
+        query.includeKey("author")
+        query.limit = 20
+        query.findObjectsInBackground { (posts, error) in
+            if posts != nil {
+                self.posts = posts!
+                self.tableView.reloadData()
+                self.refreshControl.endRefreshing()
+            } else {
+                print("Error: \(error?.localizedDescription)")
+            }
+        }
+    }
     /*
     // MARK: - Navigation
 
