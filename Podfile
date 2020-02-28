@@ -8,5 +8,6 @@ target 'CodePathParstagram' do
   # Pods for CodePathParstagram
   pod "Parse"
   pod "AlamofireImage"
+  pod "MessageInputBar"
 
 end
